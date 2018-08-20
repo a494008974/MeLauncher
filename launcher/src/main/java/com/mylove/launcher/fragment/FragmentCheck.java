@@ -26,6 +26,12 @@ public class FragmentCheck extends DialogFragment {
         return fragmentCheck;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        int style = DialogFragment.STYLE_NO_FRAME, theme = 0;
+        setStyle(style,theme);
+    }
 
     @Nullable
     @Override

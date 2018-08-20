@@ -163,7 +163,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
             mFocusBorderTwo.setVisible(true);
             return mFocusBorderTwo;
         }else{
-            mFocusBorderOne.setVisible(true);
+//            mFocusBorderOne.setVisible(true);
             return mFocusBorderOne;
         }
     }
