@@ -8,6 +8,7 @@ import com.mylove.launcher.contract.MainContract;
 import com.mylove.launcher.controller.ActionController;
 import com.mylove.launcher.model.LauncherApi;
 import com.mylove.module_base.base.BasePresenter;
+import com.mylove.module_base.bean.Element;
 import com.mylove.module_base.helper.ImageLoaderHelper;
 import com.mylove.module_base.net.BaseObserver;
 import com.mylove.module_base.net.RxSchedulers;
@@ -80,5 +81,13 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                 mView.showPicture();
             }
         },300);
+    }
+
+    public void saveElement(Element element){
+        launcherApi.saveElements(element);
+    }
+
+    public Element fetchElement(String tag){
+        return launcherApi.fetchElement(tag);
     }
 }

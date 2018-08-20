@@ -1,12 +1,14 @@
 package com.mylove.launcher.fragment;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.View;
 
 import com.mylove.launcher.R;
-import com.mylove.launcher.adapter.ListAdapter;
+import com.mylove.launcher.adapter.RecyclerAdapter;
 import com.mylove.launcher.component.DaggerLauncherComponent;
 import com.mylove.launcher.contract.PictureContract;
 import com.mylove.launcher.i.IMainAction;
@@ -35,11 +37,13 @@ public class FragmentStyleOne extends BaseFragment<StyleOnePresenter> implements
     @BindView(R.id.picture_tv_recycle_view)
     TvRecyclerView mTvRecyclerView;
 
-    ListAdapter listAdapter;
+    private PackageManager packageManager;
+
+    RecyclerAdapter listAdapter;
     List<Element> elements;
     @Override
     public int getContentLayout() {
-        return R.layout.fragment_picture;
+        return R.layout.fragment_one;
     }
 
     @Override
@@ -53,14 +57,25 @@ public class FragmentStyleOne extends BaseFragment<StyleOnePresenter> implements
 
     @Override
     public void bindView(View view, Bundle savedInstanceState) {
+        packageManager = getActivity().getPackageManager();
         setListener();
 
-        listAdapter = new ListAdapter<Element>(getActivity(),R.layout.launcher_item) {
+        listAdapter = new RecyclerAdapter<Element>(getActivity(),R.layout.launcher_item) {
             @Override
             public void onBindItemHolder(CommonRecyclerViewHolder helper, Element item, int position) {
                 helper.itemView.setTag(item.getTag());
                 helper.itemView.setOnKeyListener(FragmentStyleOne.this);
                 helper.getHolder().setText(R.id.launcher_item_name,item.getTag());
+                PackageInfo pkgInfo = null;
+                try {
+                    pkgInfo = packageManager.getPackageInfo(item.getPkg(),PackageManager.GET_PERMISSIONS);
+                } catch (PackageManager.NameNotFoundException e) {
+                }
+                if(pkgInfo == null)return;
+
+                helper.getHolder().setImageDrawable(R.id.launcher_item_icon,packageManager.getApplicationIcon(pkgInfo.applicationInfo));
+                String name = (String) packageManager.getApplicationLabel(pkgInfo.applicationInfo);
+                helper.getHolder().setText(R.id.launcher_item_name,name);
             }
         };
         elements = new ArrayList<Element>();

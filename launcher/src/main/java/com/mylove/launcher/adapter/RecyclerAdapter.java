@@ -10,10 +10,10 @@ import com.mylove.module_base.adapter.CommonRecyclerViewAdapter;
 import com.mylove.module_base.bean.Element;
 
 
-public abstract class ListAdapter<T> extends CommonRecyclerViewAdapter<T> {
+public abstract class RecyclerAdapter<T> extends CommonRecyclerViewAdapter<T> {
     private Context mContext;
     private int layoutId;
-    public ListAdapter(Context context, int layoutId) {
+    public RecyclerAdapter(Context context, int layoutId) {
         super(context);
         this.mContext = context;
         this.layoutId = layoutId;

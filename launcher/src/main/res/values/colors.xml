@@ -12,4 +12,6 @@
     <color name="module_launcher_color_white_11">#11ffffff</color>
 
     <color name="module_launcher_color_gray">#20000000</color>
+
+    <color name="module_launcher_color_black_20">#90000000</color>
 </resources>

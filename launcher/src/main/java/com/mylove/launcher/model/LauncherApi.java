@@ -16,9 +16,11 @@ import io.reactivex.Observable;
 public class LauncherApi {
     public static LauncherApi sInstance;
     public LauncherApiSerivce launcherApiSerivce;
+    private DaoSession daoSession;
 
     private LauncherApi(LauncherApiSerivce launcherApiSerivce) {
         this.launcherApiSerivce = launcherApiSerivce;
+        daoSession = BaseApplication.getAppContext().getDaoSession();
     }
 
     public static LauncherApi getInstance(LauncherApiSerivce launcherApiSerivce) {
@@ -33,8 +35,19 @@ public class LauncherApi {
     }
 
     public List<Element> getElements() {
-        DaoSession daoSession = BaseApplication.getAppContext().getDaoSession();
+        if (daoSession == null) return null;
         List<Element> elements = daoSession.getElementDao().queryBuilder().orderAsc(ElementDao.Properties.Tag).list();
         return elements;
     }
+
+    public void saveElements(Element element){
+        if (daoSession == null) return;
+        daoSession.getElementDao().insertOrReplaceInTx(element);
+    }
+
+    public Element fetchElement(String tag){
+        if (daoSession == null) return null;
+        return daoSession.getElementDao().load(tag);
+    }
+
 }

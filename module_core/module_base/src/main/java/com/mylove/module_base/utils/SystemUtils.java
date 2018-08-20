@@ -13,14 +13,21 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Random;
 import java.util.zip.GZIPInputStream;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -282,4 +289,101 @@ public class SystemUtils {
         }  
         return null;  
     }
+
+	public static PackageInfo getAPKInfo(Context ctx, String apk, boolean type) {// 获取apk的信息
+		PackageManager pm = ctx.getPackageManager();
+		PackageInfo pakinfo = null;
+		if (type) {
+			try {
+				pakinfo = pm.getPackageInfo(apk, PackageManager.GET_ACTIVITIES);
+			} catch (PackageManager.NameNotFoundException e) {
+				// TODO Auto-generated catch block
+			}
+		} else {
+			pakinfo = pm.getPackageArchiveInfo(apk,
+					PackageManager.GET_UNINSTALLED_PACKAGES);
+		}
+		return pakinfo;
+	}
+
+	public static boolean openApk(Context context, String pkg) {
+		try {
+			PackageManager pm = context.getPackageManager();
+			Intent intent = pm.getLaunchIntentForPackage(pkg);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			context.startActivity(intent);
+			return true;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			return false;
+		}
+	}
+
+	public static boolean isLaunch(Context context,String pkg){
+		if (pkg == null) return false;
+
+		PackageManager pManager = context.getPackageManager();
+		Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+		mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+		List<ResolveInfo> infos = pManager.queryIntentActivities(mainIntent,0);
+
+		for (ResolveInfo info : infos){
+			if (pkg.equals(info.activityInfo.packageName)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 查询手机内非系统应用
+	 * @param context
+	 * @return
+	 *
+	//		PackageInfo infoP = new PackageInfo();
+	//		infoP.applicationInfo = new ApplicationInfo();
+	//		infoP.applicationInfo.packageName = context.getPackageName();
+	//		apps.add(infoP);
+	 */
+	public static List<PackageInfo> getAllApps(Context context,int type) {
+		PackageManager pManager = context.getPackageManager();
+
+		Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+		mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+		List<ResolveInfo> infos = pManager.queryIntentActivities(mainIntent,0);
+
+
+		List<PackageInfo> sysApps = new ArrayList<PackageInfo>();
+		List<PackageInfo> userApps = new ArrayList<PackageInfo>();
+
+		//获取手机内所有应用
+		List<PackageInfo> paklist = pManager.getInstalledPackages(0);
+
+		for (int i = 0; i < paklist.size(); i++) {
+			PackageInfo pak = (PackageInfo) paklist.get(i);
+
+			if(!isLaunch(context,pak.applicationInfo.packageName)){
+				continue;
+			}
+
+			if ((pak.applicationInfo.flags & pak.applicationInfo.FLAG_SYSTEM) > 0) {  //判断是否为系统预装的应用程序
+				// customs applications
+				sysApps.add(pak);
+			}else if ((pak.applicationInfo.flags & pak.applicationInfo.FLAG_SYSTEM) <= 0) { //判断是否为非系统预装的应用程序
+				// customs applications
+				userApps.add(pak);
+			}
+		}
+		switch (type){
+			case 0:
+				return sysApps;
+			case 1:
+				return userApps;
+			default:
+				List<PackageInfo> apps = new ArrayList<PackageInfo>();
+				apps.addAll(userApps);
+				apps.addAll(sysApps);
+				return apps;
+		}
+	}
 }

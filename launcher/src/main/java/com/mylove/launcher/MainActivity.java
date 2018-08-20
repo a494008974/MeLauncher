@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -75,6 +77,8 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     private DaoSession daoSession;
 
     private FragmentCheck fragmentCheck;
+    private List<PackageInfo> packageInfos;
+    private PackageManager packageManager;
 
     @Override
     public int getContentLayout() {
@@ -94,6 +98,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
 
     @Override
     public void bindView(View view, Bundle savedInstanceState) {
+        packageManager = getPackageManager();
         initFocusBorder();
 
         boolean defaultData = (Boolean)SPUtil.get(this, Contanst.DEFAULT_DATA,true);
@@ -105,6 +110,18 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         StyleBean styleBean = (StyleBean)SPUtil.readObject(this, StyleContanst.STYLE_KEY, StyleContanst.getDefault());
         showFragment(styleBean.getFragment());
         showBackStyle(styleBean.getStyle());
+
+        initPackageInfo();
+    }
+
+    public void initPackageInfo(){
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                packageInfos = SystemUtils.getAllApps(MainActivity.this,3);
+            }
+        }.start();
     }
 
     private void initDefaultData() {
@@ -169,13 +186,15 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     }
 
     public void showFragment(String classStr){
+        if(currentFragment != null && currentFragment.getClass().getName().equals(classStr)){
+            return;
+        }
         try {
             FragmentManager fm = getSupportFragmentManager();
             FragmentTransaction transaction = fm.beginTransaction();
             currentFragment = Fragment.instantiate(this,classStr);
             transaction.replace(R.id.launcher_main,currentFragment);
             transaction.commit();
-
         }catch (Exception e){
 
         }
@@ -247,6 +266,50 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         return imageView;
     }
 
+
+
+    @Override
+    public void showCheck(final View view) {
+        fragmentCheck = FragmentCheck.newInstance();
+        if(fragmentCheck != null){
+            if (!fragmentCheck.isAdded()){
+                if (packageInfos == null) packageInfos = SystemUtils.getAllApps(this,3);
+                fragmentCheck.setPackageInfos(packageInfos);
+
+                fragmentCheck.setCheckListener(new FragmentCheck.CheckListener() {
+                    @Override
+                    public void onItemClick(TvRecyclerView parent, View itemView, int position, Object item) {
+                        PackageInfo info = (PackageInfo)item;
+                        ImageView tvIcon = (ImageView)view.findViewById(R.id.launcher_item_icon);
+                        TextView tvName = (TextView)view.findViewById(R.id.launcher_item_name);
+                        if(tvIcon != null){
+                            tvIcon.setImageDrawable(packageManager.getApplicationIcon(info.applicationInfo));
+                        }
+                        if(tvName != null){
+                            tvName.setText(packageManager.getApplicationLabel(info.applicationInfo));
+                        }
+                        Element element = new Element();
+                        element.setTag((String)view.getTag());
+                        element.setPkg(info.applicationInfo.packageName);
+                        mPresenter.saveElement(element);
+                        fragmentCheck.dismiss();
+                    }
+                });
+
+                fragmentCheck.show(getSupportFragmentManager(),"check");
+            }
+        }
+    }
+
+    @Override
+    public void onItemClick(TvRecyclerView parent, View itemView, int position) {
+        Element element = mPresenter.fetchElement((String)itemView.getTag());
+        if (element != null){
+            SystemUtils.openApk(this,element.getPkg());
+        }
+    }
+
+    //=======================广播====================
     public void register() {
         mNetWorkChangeReceiver = new NetWorkChangeReceiver();
         IntentFilter filterNECT = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -257,6 +320,20 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         mTimeReceiver = new TimeReceiver();
         IntentFilter filterTime = new IntentFilter(Intent.ACTION_TIME_TICK);
         registerReceiver(mTimeReceiver, filterTime);
+
+        mAppReceiver = new AppReceiver();
+        IntentFilter filterAPP = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
+        filterAPP.addDataScheme("package");
+        filterAPP.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        registerReceiver(mAppReceiver, filterAPP);
+
+        mUsbAndSDCardBroadcastReceiver = new UsbAndSDCardBroadcastReceiver();
+        IntentFilter mUsbAndSDCardFilter = new IntentFilter();
+        mUsbAndSDCardFilter.addAction("android.intent.action.MEDIA_MOUNTED");
+        mUsbAndSDCardFilter.addAction("android.intent.action.MEDIA_REMOVED");
+        mUsbAndSDCardFilter.addAction("android.intent.action.MEDIA_BAD_REMOVAL");
+        mUsbAndSDCardFilter.addDataScheme("file");
+        registerReceiver(mUsbAndSDCardBroadcastReceiver, mUsbAndSDCardFilter);
     }
 
     public void unregister() {
@@ -268,30 +345,53 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
             if (mTimeReceiver != null) {
                 unregisterReceiver(mTimeReceiver);
             }
+
+            if (mAppReceiver != null) {
+                unregisterReceiver(mAppReceiver);
+            }
+
+            if (mUsbAndSDCardBroadcastReceiver != null) {
+                unregisterReceiver(mUsbAndSDCardBroadcastReceiver);
+            }
         }catch(Exception e){
 
         }
     }
 
+    private AppReceiver mAppReceiver;
+    public class AppReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // TODO Auto-generated method stub
+            String packageName = intent.getDataString();
+            packageName = packageName.split(":")[1];
+            if (intent.getAction().equals("android.intent.action.PACKAGE_ADDED")) {
+
+            }else if(intent.getAction().equals("android.intent.action.PACKAGE_REMOVED")){
+
+            }
+            initPackageInfo();
+        }
+    }
+
+    String usbMountedPath = null;
+    UsbAndSDCardBroadcastReceiver mUsbAndSDCardBroadcastReceiver;
+    class UsbAndSDCardBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if ((intent.getAction().equals("android.intent.action.MEDIA_REMOVED"))
+                 || (intent.getAction().equals("android.intent.action.MEDIA_BAD_REMOVAL"))) {
+
+            }
+            if (intent.getAction().equals("android.intent.action.MEDIA_MOUNTED")) {
+                usbMountedPath = intent.getData().getPath();
+            }
+        }
+    }
+
     private TimeReceiver mTimeReceiver;
-
-    @Override
-    public void showCheck(View view) {
-        if(fragmentCheck == null){
-            fragmentCheck = FragmentCheck.newInstance();
-        }
-
-        if (!fragmentCheck.isAdded()){
-            fragmentCheck.show(getSupportFragmentManager(),"check");
-        }
-
-    }
-
-    @Override
-    public void onItemClick(TvRecyclerView parent, View itemView, int position) {
-        System.out.println("onItemClick ...................");
-    }
-
     public class TimeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {

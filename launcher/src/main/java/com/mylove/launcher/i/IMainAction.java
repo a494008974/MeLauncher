@@ -12,4 +12,5 @@ public interface IMainAction {
     public void showCheck(View view);
 
     public void onItemClick(TvRecyclerView parent, View itemView, int position);
+
 }

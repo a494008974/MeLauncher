@@ -11,8 +11,8 @@
 
     <ImageView
         android:id="@+id/launcher_item_icon"
-        android:layout_width="@dimen/dp_100"
-        android:layout_height="@dimen/dp_100"
+        android:layout_width="@dimen/dp_95"
+        android:layout_height="@dimen/dp_95"
         android:layout_gravity="center"
         android:src="@drawable/default_icon"/>
 
