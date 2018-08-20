@@ -7,12 +7,14 @@ package com.mylove.module_base.base;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.multidex.MultiDex;
 
 import com.facebook.stetho.Stetho;
+import com.mylove.module_base.bean.DaoMaster;
+import com.mylove.module_base.bean.DaoSession;
 import com.mylove.module_base.component.ApplicationComponent;
 import com.mylove.module_base.component.DaggerApplicationComponent;
-import com.mylove.module_base.helper.LocaleHelper;
 import com.mylove.module_base.module.ApplicationModule;
 
 import com.mylove.module_base.net.down.DownloadUtil;
@@ -22,8 +24,6 @@ import com.orhanobut.logger.Logger;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.zhy.autolayout.config.AutoLayoutConifg;
 
-import java.util.Locale;
-
 
 public class BaseApplication extends Application {
 
@@ -32,6 +32,11 @@ public class BaseApplication extends Application {
     //Activity管理
     private ActivityControl mActivityControl;
     private String BUGLY_ID = "a29fb52485" ;
+
+    private DaoMaster.DevOpenHelper mHelper;
+    private SQLiteDatabase db;
+    private DaoMaster mDaoMaster;
+    private DaoSession mDaoSession;
 
     private ApplicationComponent applicationComponent;
 
@@ -115,7 +120,31 @@ public class BaseApplication extends Application {
                                         .build();
 
         DownloadUtil.get().init(this);
+
+        setDatabase();
     }
+
+    private void setDatabase() {
+        // 通过 DaoMaster 的内部类 DevOpenHelper，你可以得到一个便利的 SQLiteOpenHelper 对象。
+        // 可能你已经注意到了，你并不需要去编写「CREATE TABLE」这样的 SQL 语句，因为 greenDAO 已经帮你做了。
+        // 注意：默认的 DaoMaster.DevOpenHelper 会在数据库升级时，删除所有的表，意味着这将导致数据的丢失。
+        // 所以，在正式的项目中，你还应该做一层封装，来实现数据库的安全升级。
+        mHelper = new DaoMaster.DevOpenHelper(this, "launcher-db", null);
+        db = mHelper.getWritableDatabase();
+        // 注意：该数据库连接属于 DaoMaster，所以多个 Session 指的是相同的数据库连接。
+        mDaoMaster = new DaoMaster(db);
+        mDaoSession = mDaoMaster.newSession();
+    }
+
+    public DaoSession getDaoSession() {
+        return mDaoSession;
+    }
+
+    public SQLiteDatabase getDb() {
+        return db;
+    }
+
+
 
     private void initBugly() {
         // 获取当前包名

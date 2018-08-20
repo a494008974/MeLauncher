@@ -1,15 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/dp_184"
-    android:layout_height="@dimen/dp_184"
+    android:layout_height="@dimen/dp_164"
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:background="@drawable/set_through_noumal"
-    android:padding="@dimen/dp_20">
+    android:background="@drawable/module_launcher_item">
 
+    <ImageView
+        android:id="@+id/launcher_item_icon"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_100"
+        android:layout_gravity="center"
+        android:src="@drawable/default_icon"/>
 
+    <TextView
+        android:id="@+id/launcher_item_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        android:singleLine="true"
+        android:padding="@dimen/dp_5"
+        android:textSize="@dimen/sp_18"/>
 
-</android.support.constraint.ConstraintLayout>
+</FrameLayout>

@@ -1,7 +1,7 @@
 package com.mylove.launcher.controller;
 
-import com.mylove.launcher.bean.HttpEvent;
-import com.mylove.module_base.utils.FileUtils;
+import com.mylove.launcher.event.HttpEvent;
+import com.mylove.launcher.bean.StyleBean;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -12,7 +12,6 @@ import java.util.Map;
 import cn.hotapk.fhttpserver.NanoHTTPD;
 import cn.hotapk.fhttpserver.annotation.RequestMapping;
 import cn.hotapk.fhttpserver.annotation.RequestParam;
-import cn.hotapk.fhttpserver.annotation.ResponseBody;
 
 /**
  * Created by Administrator on 2018/8/14.
@@ -21,11 +20,15 @@ import cn.hotapk.fhttpserver.annotation.ResponseBody;
 public class ActionController {
 
     @RequestMapping("action")
-    public NanoHTTPD.Response action(@RequestParam("fragment") String fragment) {
-        System.out.println("fragment =" + fragment);
+    public NanoHTTPD.Response action(@RequestParam("style") String style,@RequestParam("fragment") String fragment) {
         HttpEvent httpEvent = new HttpEvent();
         httpEvent.setEvent(HttpEvent.CHANGE_STYLE);
-        httpEvent.setObj(fragment);
+
+        StyleBean styleBean = new StyleBean();
+        styleBean.setStyle(style);
+        styleBean.setFragment(fragment);
+        httpEvent.setObj(styleBean);
+
         EventBus.getDefault().post(httpEvent);
         return NanoHTTPD.newFixedLengthResponse("");
     }

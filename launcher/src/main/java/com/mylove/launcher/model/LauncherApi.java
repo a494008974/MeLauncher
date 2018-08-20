@@ -1,9 +1,12 @@
 package com.mylove.launcher.model;
 
-import com.mylove.launcher.bean.Bizhi;
+import com.mylove.launcher.bean.BannerBean;
+import com.mylove.module_base.base.BaseApplication;
+import com.mylove.module_base.bean.DaoSession;
+import com.mylove.module_base.bean.Element;
+import com.mylove.module_base.bean.ElementDao;
 
 import java.util.List;
-
 import io.reactivex.Observable;
 
 /**
@@ -25,7 +28,13 @@ public class LauncherApi {
     }
 
 
-    public Observable<List<Bizhi>> getBizhi() {
-        return launcherApiSerivce.getBizhi();
+    public Observable<List<BannerBean>> getBanner() {
+        return launcherApiSerivce.getBanner();
+    }
+
+    public List<Element> getElements() {
+        DaoSession daoSession = BaseApplication.getAppContext().getDaoSession();
+        List<Element> elements = daoSession.getElementDao().queryBuilder().orderAsc(ElementDao.Properties.Tag).list();
+        return elements;
     }
 }

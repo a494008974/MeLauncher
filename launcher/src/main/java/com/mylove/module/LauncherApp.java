@@ -1,6 +1,5 @@
 package com.mylove.module;
 
-
 import com.mylove.module_base.base.BaseApplication;
 
 /**
@@ -12,6 +11,6 @@ public class LauncherApp extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-
     }
+
 }

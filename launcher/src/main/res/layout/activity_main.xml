@@ -6,26 +6,25 @@
     android:layout_height="match_parent"
     tools:context="com.mylove.launcher.MainActivity">
 
+    <ImageView
+        android:id="@+id/launcher_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <ViewFlipper
+        android:id="@+id/launcher_view_flipper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+    </ViewFlipper>
+
+    <include layout="@layout/launcher_header"></include>
+
     <FrameLayout
         android:id="@+id/launcher_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </FrameLayout>
-
-    <ViewFlipper
-        android:id="@+id/launcher_view_flipper"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </ViewFlipper>
-
-    <com.owen.tvrecyclerview.widget.TvRecyclerView
-        android:id="@+id/launcher_tv_recycle_view"
-        android:layout_width="wrap_content"
-        android:layout_marginBottom="@dimen/dp_60"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center|bottom"
-        app:tv_isMenu="true"
-        app:tv_layoutManager="ListLayoutManager"/>
 
 </FrameLayout>

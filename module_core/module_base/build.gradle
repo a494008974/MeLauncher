@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
@@ -80,6 +81,8 @@ dependencies {
     api rootProject.ext.dependencies["eventbus"]
 
     api rootProject.ext.dependencies["baseRecyclerViewAdapterHelper"]
+
+    api rootProject.ext.dependencies["greendao"]
 
     api rootProject.ext.dependencies["autolayout"]
 

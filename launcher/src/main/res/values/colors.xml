@@ -7,4 +7,9 @@
     <!-- focus -->
     <color name="launcher_item_border_color">#000000</color>
     <color name="launcher_item_shadow_color">#ffffff</color>
+
+    <color name="module_launcher_color_white_33">#33ffffff</color>
+    <color name="module_launcher_color_white_11">#11ffffff</color>
+
+    <color name="module_launcher_color_gray">#20000000</color>
 </resources>

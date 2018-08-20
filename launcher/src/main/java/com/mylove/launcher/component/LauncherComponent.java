@@ -1,8 +1,7 @@
 package com.mylove.launcher.component;
 
 import com.mylove.launcher.MainActivity;
-import com.mylove.launcher.fragment.FragmentPicture;
-import com.mylove.launcher.model.LauncherApi;
+import com.mylove.launcher.fragment.FragmentStyleOne;
 import com.mylove.launcher.module.LauncherModule;
 import com.mylove.module_base.module.ApplicationModule;
 
@@ -19,5 +18,5 @@ public interface LauncherComponent {
 
     void inject(MainActivity mainActivity);
 
-    void inject(FragmentPicture fragmentPicture);
+    void inject(FragmentStyleOne fragmentStyleOne);
 }

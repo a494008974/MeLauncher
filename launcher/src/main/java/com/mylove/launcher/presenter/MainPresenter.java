@@ -1,8 +1,9 @@
 package com.mylove.launcher.presenter;
 
 import android.content.Context;
+import android.os.Handler;
 
-import com.mylove.launcher.bean.Bizhi;
+import com.mylove.launcher.bean.BannerBean;
 import com.mylove.launcher.contract.MainContract;
 import com.mylove.launcher.controller.ActionController;
 import com.mylove.launcher.model.LauncherApi;
@@ -43,5 +44,41 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
         if(fHttpManager != null){
             fHttpManager.stopServer();
         }
+    }
+
+    public void showBanner(final Context context) {
+        launcherApi.getBanner()
+                .compose(RxSchedulers.<List<BannerBean>>applySchedulers())
+                .map(new Function<List<BannerBean>, List<BannerBean>>() {
+                    @Override
+                    public List<BannerBean> apply(List<BannerBean> bizhis) throws Exception {
+                        for (BannerBean bizhi : bizhis){
+                            ImageLoaderHelper.getInstance().download(context,bizhi.getImage());
+                        }
+                        return bizhis;
+                    }
+                })
+                .subscribe(new BaseObserver<List<BannerBean>>() {
+                    @Override
+                    public void onSuccess(List<BannerBean> bizhis) {
+                        if(bizhis != null && bizhis.size() > 0 && mView != null){
+                            mView.showBanner(bizhis);
+                        }
+                    }
+
+                    @Override
+                    public void onFail(Throwable e) {
+                    }
+                });
+
+    }
+
+    public void showPicture(Context context) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mView.showPicture();
+            }
+        },300);
     }
 }

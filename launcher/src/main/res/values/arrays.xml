@@ -1,10 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="Launcher_Default">
-        <item></item>
-        <item></item>
-        <item></item>
-        <item></item>
-        <item></item>
+    <string-array name="Launcher_DEFAULT">
+        <item>@array/Launcher_TAG</item>
+        <item>@array/Launcher_PKG</item>
+        <item>@array/Launcher_WAY</item>
+        <item>@array/Launcher_ACTION</item>
     </string-array>
+
+    <string-array name="Launcher_TAG">
+        <item>101</item>
+        <item>102</item>
+        <item>103</item>
+        <item>104</item>
+        <item>105</item>
+        <item>106</item>
+        <item>107</item>
+        <item>108</item>
+        <item>109</item>
+        <item>110</item>
+        <item>111</item>
+        <item>112</item>
+        <item>113</item>
+        <item>114</item>
+        <item>115</item>
+    </string-array>
+
+    <string-array name="Launcher_PKG">
+        <item>pkg1</item>
+        <item>pkg2</item>
+        <item>pkg3</item>
+        <item>pkg4</item>
+        <item>pkg5</item>
+        <item>pkg6</item>
+        <item>pkg7</item>
+        <item>pkg8</item>
+        <item>pkg9</item>
+        <item>pkg10</item>
+        <item>pkg11</item>
+        <item>pkg12</item>
+        <item>pkg13</item>
+        <item>pkg14</item>
+        <item>pkg15</item>
+    </string-array>
+
+    <string-array name="Launcher_WAY">
+        <item>way1</item>
+        <item>way2</item>
+        <item>way3</item>
+        <item>way4</item>
+        <item>way5</item>
+        <item>way6</item>
+        <item>way7</item>
+        <item>way8</item>
+        <item>way9</item>
+        <item>way10</item>
+        <item>way11</item>
+        <item>way12</item>
+        <item>way13</item>
+        <item>way14</item>
+        <item>way15</item>
+    </string-array>
+
+    <string-array name="Launcher_ACTION">
+        <item>action101</item>
+        <item>action102</item>
+        <item>action103</item>
+        <item>action104</item>
+        <item>action105</item>
+        <item>action106</item>
+        <item>action107</item>
+        <item>action108</item>
+        <item>action109</item>
+        <item>action110</item>
+        <item>action111</item>
+        <item>action112</item>
+        <item>action113</item>
+        <item>action114</item>
+        <item>action115</item>
+    </string-array>
+
+
 </resources>

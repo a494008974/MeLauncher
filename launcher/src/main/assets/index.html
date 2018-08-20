@@ -1,33 +1,30 @@
 <html>
     <head>
-        <title>dddd</title>
+        <title>桌面控制</title>
         <meta charset="utf-8">
         <link rel="stylesheet" href="css/bootstrap.min.css">
     </head>
     <body>
         <!-- Standard button -->
-        <button type="button" class="btn btn-default" name="action1" value="com.mylove.launcher.fragment.FragmentPicture">（默认样式）Default</button>
+        <button type="button" class="btn btn-default" name="banner" value="com.mylove.launcher.fragment.FragmentStyleOne">（默认样式）Default</button>
 
         <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
-        <button type="button" class="btn btn-primary" name="action2" value="com.mylove.launcher.fragment.FragmentVideo">（首选项）Primary</button>
+        <button type="button" class="btn btn-primary" name="picture" value="com.mylove.launcher.fragment.FragmentStyleTwo">（首选项）Primary</button>
 
         <!-- Indicates a successful or positive action -->
-        <button type="button" class="btn btn-success" name="action3" value="com.mylove.launcher.fragment.FragmentPicture">（成功）Success</button>
+        <button type="button" class="btn btn-success" name="picture" value="com.mylove.launcher.fragment.FragmentStyleOne">（成功）Success</button>
 
-        <!-- Contextual button for informational alert messages -->
-        <button type="button" class="btn btn-info" name="action4" value="com.mylove.launcher.fragment.FragmentVideo">（一般信息）Info</button>
+        <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
+        <button type="button" class="btn btn-primary" name="banner" value="com.mylove.launcher.fragment.FragmentStyleTwo">（首选项）Primary</button>
 
-        <!-- Indicates caution should be taken with this action -->
-        <button type="button" class="btn btn-warning" name="action5" value="com.mylove.launcher.fragment.FragmentPicture">（警告）Warning</button>
+        <button type="button" class="btn btn-primary" name="picture" value="com.mylove.launcher.fragment.FragmentStyleThree">（首选项）Primary</button>
 
-        <!-- Indicates a dangerous or potentially negative action -->
-        <button type="button" class="btn btn-danger" name="action6" value="com.mylove.launcher.fragment.FragmentVideo">（危险）Danger</button>
 
         <script src="js/jquery-3.3.1.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script>
             $("button").click(function(e){
-              $.get("action?fragment="+e.target.value,function(data,status){});
+              $.get("action?style="+e.target.name+"&fragment="+e.target.value,function(data,status){});
             });
         </script>
     </body>

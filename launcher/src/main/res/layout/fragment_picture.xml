@@ -5,19 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ViewFlipper
-        android:id="@+id/picture_view_flipper"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </ViewFlipper>
-
     <com.owen.tvrecyclerview.widget.TvRecyclerView
         android:id="@+id/picture_tv_recycle_view"
         android:layout_width="wrap_content"
-        android:layout_marginBottom="@dimen/dp_60"
-        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_40"
+        android:paddingRight="@dimen/dp_80"
+        android:paddingLeft="@dimen/dp_80"
+        android:layout_height="@dimen/dp_164"
         android:orientation="horizontal"
         android:layout_gravity="center|bottom"
         app:tv_isMenu="true"
         app:tv_layoutManager="ListLayoutManager"/>
+
 </FrameLayout>

@@ -4,6 +4,7 @@ package com.mylove.module_base.component;
 import android.content.Context;
 
 import com.mylove.module_base.base.BaseApplication;
+import com.mylove.module_base.bean.DaoSession;
 import com.mylove.module_base.module.ApplicationModule;
 
 import javax.inject.Singleton;
@@ -23,4 +24,6 @@ public interface ApplicationComponent {
     Context getContext();
 
     OkHttpClient.Builder getOkHttp();
+
+    DaoSession getDaoSession();
 }

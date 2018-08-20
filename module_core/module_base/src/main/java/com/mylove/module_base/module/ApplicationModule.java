@@ -3,6 +3,7 @@ package com.mylove.module_base.module;
 import android.content.Context;
 
 import com.mylove.module_base.base.BaseApplication;
+import com.mylove.module_base.bean.DaoSession;
 import com.mylove.module_base.net.RetrofitConfig;
 
 import java.io.File;
@@ -29,6 +30,11 @@ public class ApplicationModule {
     @Provides
     public BaseApplication getApplication(){
         return (BaseApplication)mContext.getApplicationContext();
+    }
+
+    @Provides
+    public DaoSession getDaoSession(){
+        return getApplication().getDaoSession();
     }
 
     @Provides

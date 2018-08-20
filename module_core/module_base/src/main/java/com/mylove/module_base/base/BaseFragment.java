@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import com.mylove.module_base.focus.FocusBorder;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 
+import org.greenrobot.eventbus.EventBus;
+
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -37,9 +39,7 @@ public abstract class BaseFragment<TP extends BaseContract.BasePresenter> extend
         } else {
             mRootView = createView(inflater, container, savedInstanceState);
         }
-
         mContext = mRootView.getContext();
-
         return mRootView;
     }
 
@@ -133,8 +133,6 @@ public abstract class BaseFragment<TP extends BaseContract.BasePresenter> extend
     protected void onMoveFocusBorder(View focusedView, float scale, float roundRadius) {
         if(null != mFocusBorder) {
             mFocusBorder.onFocus(focusedView, FocusBorder.OptionsFactory.get(scale, scale, roundRadius));
-        }else{
-            System.out.println("mFocusBorder = null");
         }
     }
 
