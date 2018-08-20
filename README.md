@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-# MeStore
-组件化架构
-
-=======
 # MeLauncher
-
+组件化架构
 #### 项目介绍
 android tv launcher
 
@@ -40,4 +35,4 @@ android tv launcher
 4. [GVP](https://gitee.com/gvp) 全称是码云最有价值开源项目，是码云综合评定出的优秀开源项目
 5. 码云官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
 6. 码云封面人物是一档用来展示码云会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
->>>>>>> 830916c66b9637174d74da8f12e9d8d4142ec864
+
