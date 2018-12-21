@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <title>桌面控制</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+    </head>
+    <body style="text-align:center;">
+        <div style="background:gray;padding:20px;">
+            风格切换
+            <br>
+            <br>
+            <button type="button" class="btn btn-default" name="style"
+                    style="margin:20px;"
+                    value="com.mylove.launcher.fragment.FragmentStyleOne">风格一</button>
+
+            <button type="button" class="btn btn-primary" name="style"
+                    style="margin:20px;"
+                    value="com.mylove.launcher.fragment.FragmentStyleThree">风格二</button>
+
+            <button type="button" class="btn btn-primary" name="style"
+                    style="margin:20px;"
+                    value="com.mylove.launcher.fragment.FragmentStyleTwo">风格三</button>
+        </div>
+        <br>
+
+        Banner
+        <form action="launcher/upload" method="post" enctype="multipart/form-data">
+            <input type="text" name="tag" value="1101" hidden/>
+            <br>
+            <input type="text" name="type" value="banner" hidden/>
+            <br>
+            <input type="file" name="file" />
+            <br />
+            <input type="submit" name="submit" value="Submit" />
+        </form>
+
+        <script src="js/jquery-3.3.1.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script>
+            $("button").click(function(e){
+               $.get("action?style="+e.target.name+"&fragment="+e.target.value,function(data,status){});
+            });
+        </script>
+    </body>
+</html>

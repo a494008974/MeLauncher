@@ -18,8 +18,19 @@
     <style name="Fullscreen_Dialog">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowBackground">@color/module_launcher_color_black_20</item>
         <item name="android:windowAnimationStyle">@style/Animation</item>
+    </style>
+
+    <style name="Fullscreen_Check" parent="Fullscreen_Dialog">
+        <item name="android:windowBackground">@color/module_sub_color_black</item>
+    </style>
+
+    <style name="Fullscreen_Sub" parent="Fullscreen_Dialog">
+        <item name="android:windowBackground">@drawable/launcher_dialog_sub</item>
+    </style>
+
+    <style name="Fullscreen_QRCode" parent="Fullscreen_Dialog">
+        <item name="android:windowBackground">@color/module_sub_color_black</item>
     </style>
 
     <style name="Animation">

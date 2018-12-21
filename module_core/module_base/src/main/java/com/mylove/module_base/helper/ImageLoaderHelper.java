@@ -62,10 +62,10 @@ public class ImageLoaderHelper {  //待封装
 
         if (iv != null && context != null && url != null) {
             RequestOptions options = new RequestOptions()
-                    .placeholder(optionsInit(0))  //加载中显示的图片
+//                    .placeholder(optionsInit(0))  //加载中显示的图片
                     .centerCrop()            //图像则位于视图的中央
                    // .override(1090, 1090*3/4)
-                    .error(IMG_ERROR) //加载失败时显示的图片centerCrop().
+//                    .error(IMG_ERROR) //加载失败时显示的图片centerCrop().
                     .diskCacheStrategy(DiskCacheStrategy.ALL);  //图片缓存
             Glide.with(context).load(url).apply(options).into(iv);
         }
@@ -112,6 +112,7 @@ public class ImageLoaderHelper {  //待封装
         if (iv != null) {
             RequestOptions options = new RequestOptions()
                     .centerCrop()
+                    .override(iv.getWidth(),iv.getHeight())
                     .diskCacheStrategy(DiskCacheStrategy.ALL);
             Glide.with(context).load(url).apply(options).into(iv);
         }

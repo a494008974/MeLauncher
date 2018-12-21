@@ -6,17 +6,10 @@
     android:layout_height="match_parent"
     tools:context="com.mylove.launcher.MainActivity">
 
-    <ImageView
-        android:id="@+id/launcher_image_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
-
     <ViewFlipper
         android:id="@+id/launcher_view_flipper"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+        android:layout_height="match_parent">
     </ViewFlipper>
 
     <include layout="@layout/launcher_header"></include>

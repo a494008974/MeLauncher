@@ -1,7 +1,6 @@
 package com.mylove.launcher.fragment;
 
 import android.content.DialogInterface;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -14,11 +13,15 @@ import android.view.ViewGroup;
 
 import com.mylove.launcher.R;
 import com.mylove.launcher.adapter.RecyclerAdapter;
+import com.mylove.launcher.i.IMainAction;
+import com.mylove.module_base.adapter.CommonRecyclerViewAdapter;
 import com.mylove.module_base.adapter.CommonRecyclerViewHolder;
 import com.mylove.module_base.focus.FocusBorder;
+import com.mylove.module_base.utils.SystemUtils;
 import com.owen.tvrecyclerview.widget.SimpleOnItemListener;
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -26,9 +29,9 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class FragmentCheck extends DialogFragment {
+public class FragmentSub extends DialogFragment {
 
-    private static FragmentCheck fragmentCheck;
+    private static FragmentSub fragmentSub;
     Unbinder unbinder;
 
     private View view;
@@ -37,38 +40,37 @@ public class FragmentCheck extends DialogFragment {
     TvRecyclerView tvRecyclerView;
 
     protected FocusBorder mFocusBorder;
-    private RecyclerAdapter mAdapter;
-
-    private CheckListener mCheckListener;
+    private CommonRecyclerViewAdapter mAdapter;
 
     List<PackageInfo> packageInfos;
     private PackageManager packageManager;
 
-    public FragmentCheck() {
+    public FragmentSub() {
         // Required empty public constructor
     }
 
-    public void setCheckListener(CheckListener mCheckListener) {
-        this.mCheckListener = mCheckListener;
-    }
-
     public void setPackageInfos(List<PackageInfo> packageInfos) {
-        this.packageInfos = packageInfos;
-
-
+        if(this.packageInfos == null){
+            this.packageInfos = new ArrayList<PackageInfo>();
+        }
+        this.packageInfos.clear();
+        if(packageInfos != null && packageInfos.size() > 1){
+            this.packageInfos.addAll(packageInfos);
+            this.packageInfos.remove(packageInfos.size() - 1);
+        }
     }
 
-    public static FragmentCheck newInstance() {
-        if (fragmentCheck == null){
-            fragmentCheck = new FragmentCheck();
+    public static FragmentSub newInstance() {
+        if (fragmentSub == null){
+            fragmentSub = new FragmentSub();
         }
-        return fragmentCheck;
+        return fragmentSub;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_FRAME,R.style.Fullscreen_Check);
+        setStyle(DialogFragment.STYLE_NO_FRAME,R.style.Fullscreen_Sub);
         packageManager = getActivity().getPackageManager();
     }
 
@@ -122,9 +124,9 @@ public class FragmentCheck extends DialogFragment {
 
             @Override
             public void onItemClick(TvRecyclerView parent, View itemView, int position) {
-                if (mCheckListener != null){
-                    mCheckListener.onItemClick(parent, itemView, position, mAdapter.getItem(position));
-                }
+                PackageInfo info = (PackageInfo)mAdapter.getItem(position);
+                SystemUtils.openApk(getActivity(),info.applicationInfo.packageName);
+                dismiss();
             }
         });
     }
@@ -144,10 +146,7 @@ public class FragmentCheck extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        fragmentCheck = null;
+        fragmentSub = null;
     }
 
-    public interface CheckListener{
-        void onItemClick(TvRecyclerView parent, View itemView, int position, Object item);
-    }
 }

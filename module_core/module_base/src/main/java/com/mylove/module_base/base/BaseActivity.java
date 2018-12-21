@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public abstract class BaseActivity<TP extends BaseContract.BasePresenter> extends SupportActivity implements IBase, BaseContract.BaseView {
+public abstract class BaseActivity<TP extends BaseContract.BasePresenter> extends AutoLayoutActivity implements IBase, BaseContract.BaseView {
     protected View mRootView;
     Unbinder unbinder;
 

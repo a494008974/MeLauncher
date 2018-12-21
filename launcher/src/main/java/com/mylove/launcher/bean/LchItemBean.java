@@ -2,10 +2,12 @@ package com.mylove.launcher.bean;
 
 import com.mylove.module_base.bean.SizeBean;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+
 /**
  * Created by Administrator on 2018/4/12.
  */
-
 public class LchItemBean extends SizeBean {
     private String name;
     private String img;

@@ -21,6 +21,16 @@ public abstract class CommonRecyclerViewAdapter<T> extends RecyclerView.Adapter<
         mInflater = LayoutInflater.from(context);
     }
 
+    public void changed(int position, T obj){
+        mDatas.set(position,obj);
+        notifyItemRangeChanged(position,1);
+    }
+
+    public void remove(int position){
+        mDatas.remove(position);
+        notifyItemRemoved(position);
+    }
+
     public CommonRecyclerViewAdapter(Context context, List<T> datas){
         this(context);
         setDatas(datas);

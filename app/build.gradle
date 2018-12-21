@@ -66,13 +66,7 @@ dependencies {
     implementation project(':module_core:module_common')
 
     if (!rootProject.ext.isModule) {
-        if (!rootProject.ext.moduleStore) {
-            implementation project(':store')
-        }
-
-        if (!rootProject.ext.moduleLauncher) {
-            implementation project(':launcher')
-        }
+        implementation project(':launcher')
     }
 
 }

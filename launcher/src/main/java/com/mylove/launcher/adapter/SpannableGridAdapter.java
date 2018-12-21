@@ -32,8 +32,16 @@ public abstract class SpannableGridAdapter<T extends SizeBean> extends CommonRec
         final View itemView = helper.itemView;
         final SpannableGridLayoutManager.LayoutParams lp =
                 (SpannableGridLayoutManager.LayoutParams) itemView.getLayoutParams();
-        final int colSpan = item.getColSpan();
-        final int rowSpan = item.getRowSpan();
+        int colSpan = item.getColSpan();
+        int rowSpan = item.getRowSpan();
+
+        if (colSpan == 0) colSpan = 7;
+        if (rowSpan == 0) rowSpan = 6;
+        if (position == 3){
+            colSpan = 14;
+            rowSpan = 12;
+        }
+
         if (lp.rowSpan != rowSpan || lp.colSpan != colSpan) {
             lp.rowSpan = rowSpan;
             lp.colSpan = colSpan;

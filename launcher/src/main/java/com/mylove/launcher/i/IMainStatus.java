@@ -1,11 +1,14 @@
 package com.mylove.launcher.i;
 
+import android.view.View;
+
 /**
  * Created by Administrator on 2018/8/17.
  */
 
 public interface IMainStatus {
+    void ItemViewUpdate();
+    void ItemViewUpdate(View view, Object obj);
 
-    void netStatuUpdate(int status);
-    void TimeUpdate(String time);
+    void NetStatuChange(boolean connect);
 }

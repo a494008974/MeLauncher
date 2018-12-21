@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -30,6 +31,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
 import android.text.format.DateFormat;
@@ -270,25 +273,45 @@ public class SystemUtils {
 		}
 		return ampmValues;
 	}
-    
-    public static String getLocalIpAddress() {  
-        try {  
-            for (Enumeration<NetworkInterface> en = NetworkInterface  
-                    .getNetworkInterfaces(); en.hasMoreElements();) {  
-                NetworkInterface intf = en.nextElement();  
-                for (Enumeration<InetAddress> enumIpAddr = intf  
-                        .getInetAddresses(); enumIpAddr.hasMoreElements();) {  
-                    InetAddress inetAddress = enumIpAddr.nextElement();  
-                    if (!inetAddress.isLoopbackAddress()) {  
-                        return inetAddress.getHostAddress().toString();  
-                    }  
-                }  
-            }  
-        } catch (SocketException ex) {  
-            Log.e("IpAddress", ex.toString());
-        }  
-        return null;  
-    }
+
+	public static String getIPAddress(Context context) {
+		NetworkInfo info = ((ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+		if (info != null && info.isConnected()) {
+			if (info.getType() == ConnectivityManager.TYPE_ETHERNET) {//当前使用2G/3G/4G网络
+				try {
+					//Enumeration<NetworkInterface> en=NetworkInterface.getNetworkInterfaces();
+					for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+						NetworkInterface intf = en.nextElement();
+						for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+							InetAddress inetAddress = enumIpAddr.nextElement();
+							if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+								return inetAddress.getHostAddress();
+							}
+						}
+					}
+				} catch (SocketException e) {
+					e.printStackTrace();
+				}
+
+			} else if (info.getType() == ConnectivityManager.TYPE_WIFI) {//当前使用无线网络
+				WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+				WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+				String ipAddress = intIP2StringIP(wifiInfo.getIpAddress());//得到IPV4地址
+				return ipAddress;
+			}
+		} else {
+			//当前无网络连接,请在设置中打开网络
+		}
+		return null;
+	}
+
+	public static String intIP2StringIP(int ip) {
+		return (ip & 0xFF) + "." +
+				((ip >> 8) & 0xFF) + "." +
+				((ip >> 16) & 0xFF) + "." +
+				(ip >> 24 & 0xFF);
+	}
 
 	public static PackageInfo getAPKInfo(Context ctx, String apk, boolean type) {// 获取apk的信息
 		PackageManager pm = ctx.getPackageManager();
@@ -339,28 +362,28 @@ public class SystemUtils {
 	 * 查询手机内非系统应用
 	 * @param context
 	 * @return
+	 *  type  0 为系统应用
+	 *  	  1 为安装应用
+	 *  	  其它为所有应用
 	 *
-	//		PackageInfo infoP = new PackageInfo();
-	//		infoP.applicationInfo = new ApplicationInfo();
-	//		infoP.applicationInfo.packageName = context.getPackageName();
-	//		apps.add(infoP);
+	 *  add
 	 */
-	public static List<PackageInfo> getAllApps(Context context,int type) {
+	public static List<PackageInfo> getAllApps(Context context,int type,boolean add) {
+
 		PackageManager pManager = context.getPackageManager();
-
-		Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-		mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-		List<ResolveInfo> infos = pManager.queryIntentActivities(mainIntent,0);
-
-
 		List<PackageInfo> sysApps = new ArrayList<PackageInfo>();
 		List<PackageInfo> userApps = new ArrayList<PackageInfo>();
-
+		PackageInfo defaultPak = null;
 		//获取手机内所有应用
 		List<PackageInfo> paklist = pManager.getInstalledPackages(0);
 
 		for (int i = 0; i < paklist.size(); i++) {
 			PackageInfo pak = (PackageInfo) paklist.get(i);
+
+			if(pak.applicationInfo.packageName.equals(context.getPackageName())){
+				defaultPak = pak;
+				continue;
+			}
 
 			if(!isLaunch(context,pak.applicationInfo.packageName)){
 				continue;
@@ -376,13 +399,16 @@ public class SystemUtils {
 		}
 		switch (type){
 			case 0:
+				if (defaultPak != null && add)sysApps.add(defaultPak);
 				return sysApps;
 			case 1:
+				if (defaultPak != null && add)userApps.add(defaultPak);
 				return userApps;
 			default:
 				List<PackageInfo> apps = new ArrayList<PackageInfo>();
 				apps.addAll(userApps);
 				apps.addAll(sysApps);
+				if (defaultPak != null && add)apps.add(defaultPak);
 				return apps;
 		}
 	}

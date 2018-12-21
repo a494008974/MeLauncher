@@ -1,13 +1,13 @@
 package com.mylove.launcher.presenter;
 
 import android.content.Context;
-import android.os.Handler;
 
-import com.mylove.launcher.bean.BannerBean;
+import com.mylove.launcher.bean.Contanst;
 import com.mylove.launcher.contract.MainContract;
-import com.mylove.launcher.controller.ActionController;
+import com.mylove.launcher.webserver.controller.ActionController;
 import com.mylove.launcher.model.LauncherApi;
 import com.mylove.module_base.base.BasePresenter;
+import com.mylove.module_base.bean.Banner;
 import com.mylove.module_base.bean.Element;
 import com.mylove.module_base.helper.ImageLoaderHelper;
 import com.mylove.module_base.net.BaseObserver;
@@ -28,15 +28,15 @@ import io.reactivex.functions.Function;
 public class MainPresenter extends BasePresenter<MainContract.View> implements MainContract.Presenter {
     private LauncherApi launcherApi;
     private FHttpManager fHttpManager;
+
     @Inject
     MainPresenter(LauncherApi launcherApi) {
         this.launcherApi = launcherApi;
     }
 
     public void startServer(Context context){
-        System.out.println("startServer ........ ");
         fHttpManager = FHttpManager.init(context, ActionController.class);
-        fHttpManager.setPort(9999);
+        fHttpManager.setPort(Contanst.SERVER_PORT);
         fHttpManager.setAllowCross(true);
         fHttpManager.startServer();
     }
@@ -49,21 +49,22 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
 
     public void showBanner(final Context context) {
         launcherApi.getBanner()
-                .compose(RxSchedulers.<List<BannerBean>>applySchedulers())
-                .map(new Function<List<BannerBean>, List<BannerBean>>() {
+                .compose(RxSchedulers.<List<Banner>>applySchedulers())
+                .map(new Function<List<Banner>, List<Banner>>() {
                     @Override
-                    public List<BannerBean> apply(List<BannerBean> bizhis) throws Exception {
-                        for (BannerBean bizhi : bizhis){
-                            ImageLoaderHelper.getInstance().download(context,bizhi.getImage());
+                    public List<Banner> apply(List<Banner> banners) throws Exception {
+                        for (Banner banner : banners){
+                            ImageLoaderHelper.getInstance().download(context,banner.getImage());
+//                            launcherApi.saveBanner(banner);
                         }
-                        return bizhis;
+                        return banners;
                     }
                 })
-                .subscribe(new BaseObserver<List<BannerBean>>() {
+                .subscribe(new BaseObserver<List<Banner>>() {
                     @Override
-                    public void onSuccess(List<BannerBean> bizhis) {
-                        if(bizhis != null && bizhis.size() > 0 && mView != null){
-                            mView.showBanner(bizhis);
+                    public void onSuccess(List<Banner> banners) {
+                        if(banners != null && banners.size() > 0 && mView != null){
+                            mView.showBanner(banners);
                         }
                     }
 
@@ -74,17 +75,10 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
 
     }
 
-    public void showPicture(Context context) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mView.showPicture();
-            }
-        },300);
-    }
+    public void saveBanner(Banner banner){launcherApi.saveBanner(banner);}
 
     public void saveElement(Element element){
-        launcherApi.saveElements(element);
+        launcherApi.saveElement(element);
     }
 
     public Element fetchElement(String tag){

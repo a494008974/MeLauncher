@@ -1,8 +1,6 @@
 /*全局配置信息及第三方依赖统一管理*/
 ext {
-    isModule = false
-    moduleStore = true // 包含MainActivity
-    moduleLauncher = true // 包含MainActivity
+    isModule = true
 
     android = [compileSdkVersion       : 27,
                buildToolsVersion       : '27.0.3',
@@ -81,6 +79,8 @@ ext {
 
                     //Android屏幕适配
                     "autolayout"                     : 'com.zhy:autolayout:1.4.5',
+                    //autosize
+                    "autosize"                          :'me.jessyan:autosize:0.8.0',
 
                     //安卓调试神器-Stetho
                     "stetho"                         : 'com.facebook.stetho:stetho:1.5.0',
@@ -98,5 +98,9 @@ ext {
                     "fhttpserver"                   :'cn.hotapk:fhttpserver:0.4.0',
                     //fastandr_dbms
                     "fastandr_dbms"                 :'cn.hotapk:fastandr_dbms:0.4.0',
+                    //zxing
+                    "zxing"                                :'com.google.zxing:core:3.3.0',
+
+
     ]
 }

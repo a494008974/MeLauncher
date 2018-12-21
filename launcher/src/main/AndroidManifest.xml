@@ -4,6 +4,7 @@
 
     <application
         android:allowBackup="true"
+        android:configChanges="locale|layoutDirection|keyboard"
         android:supportsRtl="true">
         <activity android:name=".MainActivity">
             <intent-filter>

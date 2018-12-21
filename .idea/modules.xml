@@ -11,7 +11,6 @@
       <module fileurl="file://$PROJECT_DIR$/module_core/module_data/module_data.iml" filepath="$PROJECT_DIR$/module_core/module_data/module_data.iml" />
       <module fileurl="file://$PROJECT_DIR$/module_lib/module_lib.iml" filepath="$PROJECT_DIR$/module_lib/module_lib.iml" />
       <module fileurl="file://E:\github\mModule\store\modulestore.iml" filepath="E:\github\mModule\store\modulestore.iml" />
-      <module fileurl="file://$PROJECT_DIR$/store/store.iml" filepath="$PROJECT_DIR$/store/store.iml" />
       <module fileurl="file://$PROJECT_DIR$/module_lib/tvrecyclerview/tvrecyclerview.iml" filepath="$PROJECT_DIR$/module_lib/tvrecyclerview/tvrecyclerview.iml" />
     </modules>
   </component>

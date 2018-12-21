@@ -1,11 +1,10 @@
-if (Boolean.valueOf(rootProject.ext.moduleStore)) {
+if (Boolean.valueOf(rootProject.ext.isModule)) {
     apply plugin: 'com.android.application'
 } else {
     apply plugin: 'com.android.library'
 }
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'me.tatarka.retrolambda'  //lambda配置
-
 
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
@@ -36,7 +35,7 @@ android {
 
     sourceSets {
         main {
-            if (rootProject.ext.moduleLauncher) {
+            if (rootProject.ext.isModule) {
                 manifest.srcFile 'src/main/module/AndroidManifest.xml'
             } else {
                 manifest.srcFile 'src/main/AndroidManifest.xml'
@@ -58,17 +57,17 @@ dependencies {
     testImplementation rootProject.ext.dependencies["junit"]
     androidTestImplementation rootProject.ext.dependencies["runner"]
     androidTestImplementation rootProject.ext.dependencies["espresso_core"]
-
     //Arouter
     annotationProcessor rootProject.ext.dependencies["arouter_compiler"]
     //butterknife
     annotationProcessor rootProject.ext.dependencies["butterknife_compiler"]
     //dagger
     annotationProcessor rootProject.ext.dependencies["dagger-compiler"]
-
+    api rootProject.ext.dependencies["nanohttpd"]
+    api rootProject.ext.dependencies["fhttpserver"]
+    api rootProject.ext.dependencies["zxing"]
     implementation project(':module_core:module_base')
     implementation project(':module_core:module_data')
     implementation project(':module_core:module_common')
-
     implementation project(':module_lib:tvrecyclerview')
 }

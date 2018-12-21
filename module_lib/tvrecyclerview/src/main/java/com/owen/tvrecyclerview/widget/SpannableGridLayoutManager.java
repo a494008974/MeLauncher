@@ -32,6 +32,7 @@ import com.owen.tvrecyclerview.BaseLayoutManager;
 import com.owen.tvrecyclerview.Lanes;
 import com.owen.tvrecyclerview.Lanes.LaneInfo;
 import com.owen.tvrecyclerview.R;
+import com.zhy.autolayout.utils.AutoUtils;
 
 public class SpannableGridLayoutManager extends GridLayoutManager {
     public static final String LOGTAG = "SpannableGridLM";
@@ -167,22 +168,30 @@ public class SpannableGridLayoutManager extends GridLayoutManager {
 
     private int getChildWidth(int colSpan) {
 //        return (int)(getLanes().getLaneSize() * colSpan);
-        return (int)(getLanes().getLaneSize()) * colSpan;
+        int n =  (int)(getLanes().getLaneSize());
+//        return AutoUtils.getPercentWidthSize(n * colSpan) ;
+        return n * colSpan;
     }
 
     private int getChildHeight(int rowSpan) {
 //        return (int)(getLanes().getLaneSize() * rowSpan);
-        return (int)(getLanes().getLaneSize()) * rowSpan;
+        int n =  (int)(getLanes().getLaneSize());
+//        return AutoUtils.getPercentHeightSize(n * rowSpan) ;
+        return n * rowSpan;
     }
 
     private int getWidthUsed(View child) {
+//        AutoUtils.auto(child);
         final LayoutParams lp = (LayoutParams) child.getLayoutParams();
-        return getWidth() - getPaddingLeft() - getPaddingRight() - getChildWidth(lp.colSpan);
+        int n = getWidth() - getPaddingLeft() - getPaddingRight();
+        return n - getChildWidth(lp.colSpan);
     }
 
     private int getHeightUsed(View child) {
+//        AutoUtils.auto(child);
         final LayoutParams lp = (LayoutParams) child.getLayoutParams();
-        return getHeight() - getPaddingTop() - getPaddingBottom() - getChildHeight(lp.rowSpan);
+        int n = getHeight() - getPaddingTop() - getPaddingBottom();
+        return n - getChildHeight(lp.rowSpan);
     }
     
     @Override

@@ -4,27 +4,120 @@
         <meta charset="utf-8">
         <link rel="stylesheet" href="css/bootstrap.min.css">
     </head>
-    <body>
-        <!-- Standard button -->
-        <button type="button" class="btn btn-default" name="banner" value="com.mylove.launcher.fragment.FragmentStyleOne">（默认样式）Default</button>
+    <body style="text-align:center;">
+        <div style="background:gray;padding:20px;">
+            风格切换
+            <br>
+            <br>
+            <button type="button" class="btn btn-default" name="style"
+                    style="margin:20px;"
+                    value="com.mylove.launcher.fragment.FragmentStyleOne">风格一</button>
 
-        <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
-        <button type="button" class="btn btn-primary" name="picture" value="com.mylove.launcher.fragment.FragmentStyleTwo">（首选项）Primary</button>
+            <button type="button" class="btn btn-primary" name="style"
+                    style="margin:20px;"
+                    value="com.mylove.launcher.fragment.FragmentStyleThree">风格二</button>
 
-        <!-- Indicates a successful or positive action -->
-        <button type="button" class="btn btn-success" name="picture" value="com.mylove.launcher.fragment.FragmentStyleOne">（成功）Success</button>
+            <button type="button" class="btn btn-primary" name="style"
+                    style="margin:20px;"
+                    value="com.mylove.launcher.fragment.FragmentStyleTwo">风格三</button>
+        </div>
+        <br>
+        <br>
+        网络链接
+        <form action="launcher/net/video" method="post" enctype="multipart/form-data">
+            <input type="text" name="tag" value="301" hidden/>
+            <br>
+            <input type="text" name="type" value="image" hidden/>
+            <br>
+            <input type="text" name="url" />
+            <br />
+            <input type="submit" name="submit" value="Submit" />
+        </form>
+        <br>
+        <br>
+        图片
+        <form action="launcher/upload" method="post" enctype="multipart/form-data">
+            <input type="text" name="tag" value="101" hidden/>
+            <br>
+            <input type="text" name="type" value="image" hidden/>
+            <br>
+            <input type="file" name="file" />
+            <br />
+            <input type="submit" name="submit" value="Submit" />
+        </form>
 
-        <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
-        <button type="button" class="btn btn-primary" name="banner" value="com.mylove.launcher.fragment.FragmentStyleTwo">（首选项）Primary</button>
+        Banner
+        <form action="launcher/upload" method="post" enctype="multipart/form-data">
+            <input type="text" name="tag" value="1101" hidden/>
+            <br>
+            <input type="text" name="type" value="banner" hidden/>
+            <br>
+            <input type="file" name="file" />
+            <br />
+            <input type="submit" name="submit" value="Submit" />
+        </form>
 
-        <button type="button" class="btn btn-primary" name="picture" value="com.mylove.launcher.fragment.FragmentStyleThree">（首选项）Primary</button>
+        <form action="launcher/upload" method="post" enctype="multipart/form-data">
+            <input type="text" name="tag" value="1102" hidden/>
+            <br>
+            <input type="text" name="type" value="banner" hidden/>
+            <br>
+            <input type="file" name="file" />
+            <br />
+            <input type="submit" name="submit" value="Submit" />
+        </form>
 
+        <form action="launcher/upload" method="post" enctype="multipart/form-data">
+            <input type="text" name="tag" value="1103" hidden/>
+            <br>
+            <input type="text" name="type" value="banner" hidden/>
+            <br>
+            <input type="file" name="file" />
+            <br />
+            <input type="submit" name="submit" value="Submit" />
+        </form>
+
+        <br>
+        <br>
+        <br>
+        <br>
+
+        视频
+        <form action="launcher/upload" method="post" enctype="multipart/form-data">
+            <input type="text" name="tag" value="301" hidden/>
+            <br>
+            <input type="text" name="type" value="video" hidden/>
+            <br>
+            <input type="file" name="file" />
+            <br />
+            <input type="submit" name="submit" value="Submit" />
+        </form>
+
+        <form action="launcher/upload" method="post" enctype="multipart/form-data">
+            <input type="text" name="tag" value="302" hidden/>
+            <br>
+            <input type="text" name="type" value="image" hidden/>
+            <br>
+            <input type="file" name="file" />
+            <br />
+            <input type="submit" name="submit" value="Submit" />
+        </form>
+
+        <form action="launcher/upload" method="post" enctype="multipart/form-data">
+            <input type="text" name="tag" value="303" hidden/>
+            <br>
+            <input type="text" name="type" value="image" hidden/>
+            <br>
+            <input type="file" name="file" />
+            <br />
+            <input type="submit" name="submit" value="Submit" />
+        </form>
 
         <script src="js/jquery-3.3.1.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script>
             $("button").click(function(e){
-              $.get("action?style="+e.target.name+"&fragment="+e.target.value,function(data,status){});
+               $.get("action?style="+e.target.name+"&fragment="+e.target.value,function(data,status){});
             });
         </script>
     </body>

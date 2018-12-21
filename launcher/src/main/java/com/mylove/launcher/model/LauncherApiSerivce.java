@@ -1,7 +1,8 @@
 package com.mylove.launcher.model;
 
 
-import com.mylove.launcher.bean.BannerBean;
+import com.mylove.launcher.bean.Contanst;
+import com.mylove.module_base.bean.Banner;
 
 import java.util.List;
 
@@ -13,10 +14,7 @@ import retrofit2.http.GET;
  */
 
 public interface LauncherApiSerivce {
-    String launcherUrl = "http://zmapi.dangbei.net/";
 
-//    http://zmapi.dangbei.net/thirdpart/bizhi/
-
-    @GET("thirdpart/bizhi")
-    Observable<List<BannerBean>> getBanner();
+    @GET(Contanst.SERVER_DIR+"/banners")
+    Observable<List<Banner>> getBanner();
 }

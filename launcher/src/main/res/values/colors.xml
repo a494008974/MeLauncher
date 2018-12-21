@@ -13,5 +13,7 @@
 
     <color name="module_launcher_color_gray">#20000000</color>
 
+    <color name="module_sub_color_black">#eb000000</color>
+
     <color name="module_launcher_color_black_20">#90000000</color>
 </resources>

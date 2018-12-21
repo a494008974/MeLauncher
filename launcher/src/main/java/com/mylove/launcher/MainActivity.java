@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -15,11 +16,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.mylove.launcher.bean.BannerBean;
 import com.mylove.launcher.bean.Contanst;
 import com.mylove.launcher.event.HttpEvent;
 import com.mylove.launcher.bean.StyleBean;
@@ -27,14 +28,18 @@ import com.mylove.launcher.bean.StyleContanst;
 import com.mylove.launcher.component.DaggerLauncherComponent;
 import com.mylove.launcher.contract.MainContract;
 import com.mylove.launcher.fragment.FragmentCheck;
+import com.mylove.launcher.fragment.FragmentQRCode;
 import com.mylove.launcher.fragment.FragmentStyleOne;
 import com.mylove.launcher.fragment.FragmentStyleTwo;
+import com.mylove.launcher.fragment.FragmentSub;
 import com.mylove.launcher.i.IMainAction;
+import com.mylove.launcher.i.IMainStatus;
 import com.mylove.launcher.module.LauncherModule;
 import com.mylove.launcher.presenter.MainPresenter;
 import com.mylove.module_base.base.BaseActivity;
 import com.mylove.module_base.base.BaseApplication;
 import com.mylove.module_base.base.BaseFragment;
+import com.mylove.module_base.bean.Banner;
 import com.mylove.module_base.bean.DaoSession;
 import com.mylove.module_base.bean.Element;
 import com.mylove.module_base.component.ApplicationComponent;
@@ -59,9 +64,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     @BindView(R.id.launcher_view_flipper)
     ViewFlipper mViewFlipper;
 
-    @BindView(R.id.launcher_image_view)
-    ImageView mImageView;
-
     @BindView(R.id.launcher_statu_time)
     TextView timeTextView;
 
@@ -77,6 +79,9 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     private DaoSession daoSession;
 
     private FragmentCheck fragmentCheck;
+    private FragmentSub fragmentSub;
+    private FragmentQRCode fragmentQRCode;
+
     private List<PackageInfo> packageInfos;
     private PackageManager packageManager;
 
@@ -109,7 +114,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
 
         StyleBean styleBean = (StyleBean)SPUtil.readObject(this, StyleContanst.STYLE_KEY, StyleContanst.getDefault());
         showFragment(styleBean.getFragment());
-        showBackStyle(styleBean.getStyle());
 
         initPackageInfo();
     }
@@ -119,7 +123,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
             @Override
             public void run() {
                 super.run();
-                packageInfos = SystemUtils.getAllApps(MainActivity.this,3);
+                packageInfos = SystemUtils.getAllApps(MainActivity.this,3,true);
             }
         }.start();
     }
@@ -128,6 +132,8 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         TypedArray typedArray = getResources().obtainTypedArray(R.array.Launcher_DEFAULT);
         List<Element> elements = new ArrayList<Element>();
         String[] tagArray = getResources().getStringArray(typedArray.getResourceId(0,-1));
+
+
         for (int i=0; i<tagArray.length; i++){
             Element element = new Element();
             element.setTag(tagArray[i]);
@@ -155,17 +161,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
                     .shadowWidth(TypedValue.COMPLEX_UNIT_DIP, 20)
                     .animDuration(180L)
                     .build(this);
-        }
-    }
-
-    private void showBackStyle(String style) {
-        switch (style){
-            case StyleContanst.BANNER:
-                    mPresenter.showBanner(this);
-                break;
-            case StyleContanst.PICTURE:
-                    mPresenter.showPicture(this);
-                break;
         }
     }
 
@@ -206,8 +201,13 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
             case HttpEvent.CHANGE_STYLE:
                 StyleBean styleBean = (StyleBean)event.getObj();
                 showFragment(styleBean.getFragment());
-                showBackStyle(styleBean.getStyle());
                 SPUtil.saveObject(this, StyleContanst.STYLE_KEY,styleBean);
+                break;
+            case HttpEvent.CHANGE_BANNER:
+                mPresenter.showBanner(this);
+                break;
+            case HttpEvent.CHANGE_ELEMENT:
+                ((IMainStatus)currentFragment).ItemViewUpdate();
                 break;
             case HttpEvent.UPLOAD_EVENT:
                 break;
@@ -226,6 +226,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     @Override
     public void initData() {
         mPresenter.startServer(this);
+        mPresenter.showBanner(this);
         register();
     }
 
@@ -238,61 +239,54 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     }
 
     @Override
-    public void showBanner(List<BannerBean> bizhis) {
+    public void showBanner(List<Banner> banners) {
         if(mViewFlipper == null) return;
-        if(mImageView != null) mImageView.setVisibility(View.GONE);
-        for (BannerBean bizhi : bizhis){
-            mViewFlipper.addView(createShowView(bizhi));
+        mViewFlipper.removeAllViews();
+        for (Banner banner : banners){
+            mViewFlipper.addView(createShowView(banner));
         }
         mViewFlipper.setInAnimation(this,R.anim.launcher_fade_in);
         mViewFlipper.setOutAnimation(this,R.anim.launcher_fade_out);
-        mViewFlipper.setAutoStart(true);
-        mViewFlipper.setFlipInterval(8000);
-        mViewFlipper.startFlipping();
+        if(banners.size() > 1){
+            mViewFlipper.setAutoStart(true);
+            mViewFlipper.setFlipInterval(8000);
+            mViewFlipper.startFlipping();
+        }
         mViewFlipper.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void showPicture() {
-        if(mImageView == null) return;
-        if(mViewFlipper != null) mViewFlipper.setVisibility(View.GONE);
-        mImageView.setImageResource(R.drawable.launcher_style_picture);
-        mImageView.setVisibility(View.VISIBLE);
-    }
-
-    public View createShowView(BannerBean bizhi){
+    public View createShowView(Banner banner){
         ImageView imageView = new ImageView(this);
-        ImageLoaderHelper.getInstance().loadForCache(this,bizhi.getImage(),imageView);
+        imageView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT));
+        ImageLoaderHelper.getInstance().loadForCache(this,banner.getImage(),imageView);
         return imageView;
     }
-
-
 
     @Override
     public void showCheck(final View view) {
         fragmentCheck = FragmentCheck.newInstance();
         if(fragmentCheck != null){
             if (!fragmentCheck.isAdded()){
-                if (packageInfos == null) packageInfos = SystemUtils.getAllApps(this,3);
+                if (packageInfos == null) {
+                    packageInfos = SystemUtils.getAllApps(this,3,true);
+                }
                 fragmentCheck.setPackageInfos(packageInfos);
 
                 fragmentCheck.setCheckListener(new FragmentCheck.CheckListener() {
                     @Override
                     public void onItemClick(TvRecyclerView parent, View itemView, int position, Object item) {
                         PackageInfo info = (PackageInfo)item;
-                        ImageView tvIcon = (ImageView)view.findViewById(R.id.launcher_item_icon);
-                        TextView tvName = (TextView)view.findViewById(R.id.launcher_item_name);
-                        if(tvIcon != null){
-                            tvIcon.setImageDrawable(packageManager.getApplicationIcon(info.applicationInfo));
-                        }
-                        if(tvName != null){
-                            tvName.setText(packageManager.getApplicationLabel(info.applicationInfo));
-                        }
+
                         Element element = new Element();
                         element.setTag((String)view.getTag());
-                        element.setPkg(info.applicationInfo.packageName);
+                        if (!getPackageName().equals(info.applicationInfo.packageName)){
+                            element.setPkg(info.applicationInfo.packageName);
+                        }
                         mPresenter.saveElement(element);
+
+                        ((IMainStatus)currentFragment).ItemViewUpdate(view,element);
                         fragmentCheck.dismiss();
+
                     }
                 });
 
@@ -302,11 +296,48 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     }
 
     @Override
+    public void showSub() {
+        fragmentSub = FragmentSub.newInstance();
+        if(fragmentSub != null){
+            if (!fragmentSub.isAdded()){
+                if (packageInfos == null) {
+                    packageInfos = SystemUtils.getAllApps(this,3,true);
+                }
+                fragmentSub.setPackageInfos(packageInfos);
+                fragmentSub.show(getSupportFragmentManager(),"sub");
+            }
+        }
+    }
+
+    @Override
+    public void showQRCode() {
+        fragmentQRCode = FragmentQRCode.newInstance();
+        if(fragmentQRCode != null){
+            if (!fragmentQRCode.isAdded()){
+                if (packageInfos == null) {
+                    packageInfos = SystemUtils.getAllApps(this,3,true);
+                }
+                fragmentQRCode.show(getSupportFragmentManager(),"sub");
+            }
+        }
+    }
+
+    @Override
     public void onItemClick(TvRecyclerView parent, View itemView, int position) {
         Element element = mPresenter.fetchElement((String)itemView.getTag());
-        if (element != null){
+        if (element != null && element.getPkg() != null && !"".equals(element.getPkg())){
             SystemUtils.openApk(this,element.getPkg());
+        }else{
+            showCheck(itemView);
         }
+    }
+
+
+
+    private boolean connect;
+    @Override
+    public boolean fetchNetStatu() {
+        return connect;
     }
 
     //=======================广播====================
@@ -414,6 +445,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
                 connectivityManager = (ConnectivityManager) MainActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo mNetworkInfo = connectivityManager.getActiveNetworkInfo();
                 if(mNetworkInfo != null && mNetworkInfo.isAvailable()){
+                    connect = true;
                     switch (mNetworkInfo.getType()) {
                         case  ConnectivityManager.TYPE_WIFI:
                             netImageView.setImageResource(R.drawable.wifi_normal);
@@ -423,6 +455,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
                             break;
                     }
                 }else{
+                    connect = false;
                     netImageView.setImageResource(R.drawable.net_no_normal);
                 }
             }

@@ -1,7 +1,12 @@
 package com.mylove.launcher.module;
 
+import com.mylove.launcher.bean.Contanst;
 import com.mylove.launcher.model.LauncherApi;
 import com.mylove.launcher.model.LauncherApiSerivce;
+import com.mylove.module_base.base.BaseApplication;
+import com.mylove.module_base.utils.SystemUtils;
+
+import java.io.File;
 
 import javax.inject.Singleton;
 
@@ -28,7 +33,7 @@ public class LauncherModule {
                 .client(builder.build());
 
         return LauncherApi.getInstance(retrofitBuilder
-                .baseUrl(LauncherApiSerivce.launcherUrl)
+                .baseUrl(Contanst.getServerPath(SystemUtils.getIPAddress(BaseApplication.getAppContext()))+ File.separator)
                 .build().create(LauncherApiSerivce.class));
     }
 }
